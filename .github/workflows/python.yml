@@ -1,0 +1,40 @@
+---
+name: To build , test and deploy python application to AWS Elastic Beanstalk
+on:
+ push:
+  branches: [ "main" ]
+ pull_requests:
+  branches: [ "main" ]
+permissions:
+ contents: read
+jobs:
+ build-and-test:
+  runs-on: ubuntu-latest
+
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install awsebcli
+        pip install -r requirements.txt
+    - name: Run tests
+      run: |
+        pytest
+        pip install awsebcli
+ 
+    - name: Deploy to Elastic Beanstalk
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+      run: |
+        eb init -p python-3.10 my-eb-app --region $AWS_DEFAULT_REGION
+        eb deploy
