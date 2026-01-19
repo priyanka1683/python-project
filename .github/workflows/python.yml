@@ -37,5 +37,5 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
       run: |
-        eb init -p python-3.10 my-eb-app --region $AWS_DEFAULT_REGION
+        eb init -p "Python 3.10 running on 64bit Amazon Linux 2" my-eb-app --region $AWS_DEFAULT_REGION
         eb deploy
